@@ -81,6 +81,80 @@
                 opacity: 0;
             }
         }
+
+        /* ACCEPT BUTTON WITH FIRE */
+        .accept-btn {
+            margin-top: 25px;
+            padding: 15px 45px;
+            font-size: 1.3em;
+            font-weight: bold;
+            color: white;
+            background: linear-gradient(45deg, #ff512f, #dd2476);
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 0 25px rgba(255, 80, 80, 0.9);
+            transition: transform 0.2s ease;
+        }
+
+        .accept-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .accept-btn::before {
+            content: "";
+            position: absolute;
+            bottom: -30px;
+            left: 50%;
+            width: 140%;
+            height: 140%;
+            background: radial-gradient(circle, rgba(255,165,0,0.9), transparent 70%);
+            transform: translateX(-50%);
+            animation: fireMove 0.8s infinite alternate;
+        }
+
+        @keyframes fireMove {
+            from {
+                transform: translateX(-50%) scale(1);
+                opacity: 0.6;
+            }
+            to {
+                transform: translateX(-50%) scale(1.4);
+                opacity: 1;
+            }
+        }
+
+        .fire-text {
+            font-size: 1.4em;
+            margin-top: 15px;
+            color: #d6336c;
+            display: none;
+            font-weight: bold;
+        }
+
+        /* 💍 RING ANIMATION */
+        .ring {
+            font-size: 3.5em;
+            margin-top: 15px;
+            display: none;
+            animation: ringPop 1.5s ease forwards;
+        }
+
+        @keyframes ringPop {
+            0% {
+                transform: scale(0) rotate(-30deg);
+                opacity: 0;
+            }
+            50% {
+                transform: scale(1.5) rotate(10deg);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(1) rotate(0);
+            }
+        }
     </style>
 </head>
 
@@ -88,7 +162,6 @@
 
 <h1>Me & Mayuri Friendship Story</h1>
 
-<!-- Friendship Section -->
 <div class="section">
     <h2>Our Friendship Began</h2>
     <div class="avatars">
@@ -96,29 +169,26 @@
         <span>👧</span>
     </div>
     <p>
-        Mayuri and I became friends on <strong>7 May 2024</strong>.  
-        From that day, countless memories were created, laughter shared, and support given.
-        Our bond built on trust, fun, and endless conversations grew stronger every day.
+        Mayuri and I became friends on <strong>7 May 2024</strong>.<br>
+        From that day, countless memories were created, laughter shared,
+        and support given. Our bond grew stronger every day.
     </p>
     <div class="counter">
         Days since friendship: <span id="daysCount">0</span>
     </div>
 </div>
 
-<!-- Message Section -->
 <div class="section">
     <h2>Message from Me to Mayuri</h2>
     <p>
-        💌 "Mayuri, ever since we met, my days have been brighter and happier.
-        I cherish every moment we've spent together, and I’m grateful for your friendship.
-        Here’s to many more adventures and laughter together!" 💌
+        💌 "Ever since we met, my days have been brighter and happier.
+        I cherish every moment we've spent together.
+        Thank you for being you." 💌
     </p>
 </div>
 
-<!-- Celebration Section -->
 <div class="section">
     <h2>Our Special Celebrations 🎉</h2>
-
     <p>
         🎂 <strong>4 March 2025</strong> — I celebrated <strong>Mayuri’s birthday</strong> at
         <strong>Talegaon Dabhade</strong>.  
@@ -132,7 +202,6 @@
     </p>
 </div>
 
-<!-- Love Section -->
 <div class="section love-story">
     <h2>From Friendship to Love <span class="heart">❤️</span></h2>
     <p>
@@ -146,10 +215,17 @@
     </div>
 
     <p>Countdown to proposal: <span id="loveCountdown">Loading...</span></p>
+
+    <button class="accept-btn" onclick="acceptLove()">ACCEPT 🔥</button>
+
+    <div class="ring" id="ring">💍</div>
+
+    <div class="fire-text" id="acceptMessage">
+        ❤️ Accepted with Heart ❤️
+    </div>
 </div>
 
 <script>
-    // Days since friendship (UTC safe)
     function calculateDays() {
         const friendshipStart = new Date(Date.UTC(2024, 4, 7));
         const today = new Date();
@@ -159,23 +235,23 @@
     }
 
     calculateDays();
-    setInterval(calculateDays, 1000 * 60 * 60);
+    setInterval(calculateDays, 3600000);
 
-    // Countdown to proposal
     function loveCountdown() {
         const proposalDate = new Date(Date.UTC(2026, 1, 14));
         const now = new Date();
         const diff = proposalDate - now;
 
         if (diff <= 0) {
-            document.getElementById("loveCountdown").innerText = "💖 It's Proposal Day! 💖";
+            document.getElementById("loveCountdown").innerText =
+                "💖 It's Proposal Day! 💖";
             return;
         }
 
         const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-        const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-        const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+        const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+        const minutes = Math.floor((diff / (1000 * 60)) % 60);
+        const seconds = Math.floor((diff / 1000) % 60);
 
         document.getElementById("loveCountdown").innerText =
             `${days}d ${hours}h ${minutes}m ${seconds}s`;
@@ -184,9 +260,7 @@
     loveCountdown();
     setInterval(loveCountdown, 1000);
 
-    // Floating hearts
     const loveSection = document.querySelector('.love-story');
-    const heartColors = ['#FF0000', '#FF69B4', '#FF1493', '#FF4500'];
 
     function createHeart() {
         const heart = document.createElement('div');
@@ -195,18 +269,19 @@
         heart.style.left = Math.random() * 90 + '%';
         heart.style.animationDuration = (3 + Math.random() * 3) + 's';
         heart.style.fontSize = (15 + Math.random() * 25) + 'px';
-        heart.style.color = heartColors[Math.floor(Math.random() * heartColors.length)];
-
         loveSection.appendChild(heart);
-
-        setTimeout(() => {
-            if (heart.parentNode) {
-                heart.parentNode.removeChild(heart);
-            }
-        }, 6000);
+        setTimeout(() => heart.remove(), 6000);
     }
 
     setInterval(createHeart, 400);
+
+    function acceptLove() {
+        document.getElementById("acceptMessage").style.display = "block";
+        document.getElementById("ring").style.display = "block";
+        for (let i = 0; i < 20; i++) {
+            createHeart();
+        }
+    }
 </script>
 
 </body>
