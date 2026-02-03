@@ -282,6 +282,21 @@
             createHeart();
         }
     }
+    // ACCEPT BUTTON ACTION
+function acceptLove(){
+    document.getElementById("acceptMessage").style.display="block";
+    document.getElementById("ring").style.display="block";
+
+    for(let i=0;i<20;i++) createHeart();
+
+    // 🔥 WHATSAPP MESSAGE TO YOUR NUMBER
+    const phoneNumber="8624909280"; // <-- PUT YOUR NUMBER
+    const message=encodeURIComponent(
+        "❤️ ACCEPTED! 💍\nMe & You Forever 💖"
+    );
+
+    window.open(`https://wa.me/${phoneNumber}?text=${message}`,"_blank");
+}
 </script>
 
 </body>
